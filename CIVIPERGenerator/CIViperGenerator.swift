@@ -107,7 +107,7 @@ import Foundation
 import UIKit
 
 protocol \(prefix)ViewControllerInterface:class {}
-class \(prefix)ViewController : TYRootViewController {
+class \(prefix)ViewController : UIViewController {
 
     var presenter : \(prefix)Presenter?
 
