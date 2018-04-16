@@ -24,8 +24,8 @@ func getUserName(_ args: String...) -> String {
 }
 
 let userName = getUserName()
-let module = CommandLine.arguments[1].capitalized
-let prefix = CommandLine.arguments[2].capitalized
+let module = CommandLine.arguments[1]
+let prefix = CommandLine.arguments[2]
 let fileManager = FileManager.default
 
 let workUrl           = URL(fileURLWithPath: fileManager.currentDirectoryPath, isDirectory: true)
