@@ -66,7 +66,7 @@ class \(prefix)Router: NSObject {
 
     weak var presenter: \(prefix)PresenterInterface?
 
-    func setupModule() -> \(prefix)ViewController {
+    static func setupModule() -> \(prefix)ViewController {
         let vc = \(prefix)ViewController()
         let interactor = \(prefix)Interactor()
         let router = \(prefix)Router()
