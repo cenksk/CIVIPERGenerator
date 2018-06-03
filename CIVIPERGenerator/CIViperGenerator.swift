@@ -64,19 +64,19 @@ protocol \(prefix)RouterInterface:class {}
 
 class \(prefix)Router: NSObject {
 
-weak var presenter: \(prefix)PresenterInterface?
+    weak var presenter: \(prefix)PresenterInterface?
 
-func setupModule() -> \(prefix)ViewController {
-let vc = \(prefix)ViewController()
-let interactor = \(prefix)Interactor()
-let router = \(prefix)Router()
-let presenter = \(prefix)Presenter(interactor: interactor, router: router, view: vc)
+    func setupModule() -> \(prefix)ViewController {
+        let vc = \(prefix)ViewController()
+        let interactor = \(prefix)Interactor()
+        let router = \(prefix)Router()
+        let presenter = \(prefix)Presenter(interactor: interactor, router: router, view: vc)
 
-vc.presenter = presenter
-router.presenter = presenter
-interactor.presenter = presenter
-return vc
-}
+        vc.presenter = presenter
+        router.presenter = presenter
+        interactor.presenter = presenter
+        return vc
+    }
 }
 
 extension \(prefix)Router: \(prefix)RouterInterface {}
@@ -93,17 +93,17 @@ protocol \(prefix)PresenterInterface:class {}
 
 class \(prefix)Presenter {
 
-weak var view: \(prefix)ViewControllerInterface?
-let router: \(prefix)RouterInterface?
-let interactor: \(prefix)InteractorInterface?
+    weak var view: \(prefix)ViewControllerInterface?
+    let router: \(prefix)RouterInterface?
+    let interactor: \(prefix)InteractorInterface?
 
-init(interactor: \(prefix)InteractorInterface, router: \(prefix)RouterInterface, view: \(prefix)ViewControllerInterface) {
-self.view = view
-self.interactor = interactor
-self.router = router
+    init(interactor: \(prefix)InteractorInterface, router: \(prefix)RouterInterface, view: \(prefix)ViewControllerInterface) {
+        self.view = view
+        self.interactor = interactor
+        self.router = router
+    }
 }
 
-}
 extension \(prefix)Presenter: \(prefix)PresenterInterface {}
 
 """
@@ -117,7 +117,7 @@ protocol \(prefix)ViewControllerInterface:class {}
 
 class \(prefix)ViewController: UIViewController {
 
-var presenter: \(prefix)PresenterInterface?
+    var presenter: \(prefix)PresenterInterface?
 
 }
 
@@ -133,9 +133,7 @@ import Foundation
 protocol \(prefix)InteractorInterface:class {}
 
 class \(prefix)Interactor:NSObject, \(prefix)InteractorInterface {
-
-weak var presenter: \(prefix)PresenterInterface?
-
+    weak var presenter: \(prefix)PresenterInterface?
 }
 
 
