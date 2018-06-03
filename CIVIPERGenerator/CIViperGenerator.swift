@@ -10,7 +10,7 @@ guard CommandLine.arguments.count > 1 else {
 func getUserName(_ args: String...) -> String {
     let task = Process()
     let pipe = Pipe()
-
+    
     task.standardOutput = pipe
     task.standardError = pipe
     task.launchPath = "/usr/bin/env"
@@ -42,16 +42,16 @@ func fileComment(for module: String, type: String) -> String {
     let year     = String(calendar.component(.year, from: today))
     let month    = String(format: "%02d", calendar.component(.month, from: today))
     let day      = String(format: "%02d", calendar.component(.day, from: today))
-
+    
     return """
-        //
-        //  \(module)\(type).swift
-        //  CIViperGenerator
-        //
-        //  Created by \(userName) on \(day).\(month).\(year).
-        //  Copyright © \(year) \(userName). All rights reserved.
-        //
-        """
+    //
+    //  \(module)\(type).swift
+    //  CIViperGenerator
+    //
+    //  Created by \(userName) on \(day).\(month).\(year).
+    //  Copyright © \(year) \(userName). All rights reserved.
+    //
+    """
 }
 
 let interfaceRouter = """
@@ -60,26 +60,28 @@ let interfaceRouter = """
 import Foundation
 import UIKit
 
+protocol \(prefix)RouterInterface:class {}
+
 class \(prefix)Router: NSObject {
 
-    weak var presenter: \(prefix)Presenter?
+weak var presenter: \(prefix)PresenterInterface?
 
-    func setupModule(){
-      let view = \(prefix)ViewController()
-      let interactor = \(prefix)Interactor()
-      let presenter = \(prefix)Presenter()
-      let router = \(prefix)Router()
+func setupModule() -> \(prefix)ViewController {
+let vc = \(prefix)ViewController()
+let interactor = \(prefix)Interactor()
+let router = \(prefix)Router()
+let presenter = \(prefix)Presenter(interactor: interactor, router: router, view: vc)
 
-      view.presenter = presenter
-
-      presenter.interactor = interactor
-      presenter.view = view
-      presenter.router = router
-
-      router.presenter = presenter
-      interactor.presenter = presenter
-    }
+vc.presenter = presenter
+router.presenter = presenter
+interactor.presenter = presenter
+return vc
 }
+}
+
+extension \(prefix)Router: \(prefix)RouterInterface {}
+
+
 """
 
 let interfacePresenter = """
@@ -88,32 +90,38 @@ let interfacePresenter = """
 import Foundation
 
 protocol \(prefix)PresenterInterface:class {}
-protocol \(prefix)PresenterOutput:class {}
-class \(prefix)Presenter:\(prefix)PresenterOutput {
 
-    weak var view:\(prefix)ViewController?
-    var router:\(prefix)Router?
-    var interactor:\(prefix)Interactor?
+class \(prefix)Presenter {
+
+weak var view: \(prefix)ViewControllerInterface?
+let router: \(prefix)RouterInterface?
+let interactor: \(prefix)InteractorInterface?
+
+init(interactor: \(prefix)InteractorInterface, router: \(prefix)RouterInterface, view: \(prefix)ViewControllerInterface) {
+self.view = view
+self.interactor = interactor
+self.router = router
+}
 
 }
-extension \(prefix)Presenter:\(prefix)PresenterInterface {}
+extension \(prefix)Presenter: \(prefix)PresenterInterface {}
 
 """
 
 let interfaceViewController = """
 \(fileComment(for: prefix, type: "ViewController"))
 
-import Foundation
 import UIKit
 
 protocol \(prefix)ViewControllerInterface:class {}
-class \(prefix)ViewController : UIViewController {
 
-    var presenter : \(prefix)Presenter?
+class \(prefix)ViewController: UIViewController {
+
+var presenter: \(prefix)PresenterInterface?
 
 }
 
-extension \(prefix)ViewController:\(prefix)ViewControllerInterface {}
+extension \(prefix)ViewController: \(prefix)ViewControllerInterface {}
 
 """
 
@@ -122,11 +130,11 @@ let interfaceInteractor = """
 
 import Foundation
 
-protocol \(prefix)InteractorInput:class {}
+protocol \(prefix)InteractorInterface:class {}
 
-class \(prefix)Interactor:NSObject {
+class \(prefix)Interactor:NSObject, \(prefix)InteractorInterface {
 
-  weak var presenter:\(prefix)Presenter?
+weak var presenter: \(prefix)PresenterInterface?
 
 }
 
@@ -137,12 +145,12 @@ do {
     try [moduleUrl].forEach {
         try fileManager.createDirectory(at: $0, withIntermediateDirectories: true, attributes: nil)
     }
-
-    try interfaceRouter.write(to: interfaceRouterUrl, atomically: true, encoding: .utf8)
-    try interfacePresenter.write(to: interfacePresenterUrl, atomically: true, encoding: .utf8)
+    
     try interfaceViewController.write(to: interfaceViewControllerUrl, atomically: true, encoding: .utf8)
+    try interfacePresenter.write(to: interfacePresenterUrl, atomically: true, encoding: .utf8)
     try interfaceInteractor.write(to: interfaceInteractorUrl, atomically: true, encoding: .utf8)
-
+    try interfaceRouter.write(to: interfaceRouterUrl, atomically: true, encoding: .utf8)
+    
 }
 catch {
     print(error.localizedDescription)
