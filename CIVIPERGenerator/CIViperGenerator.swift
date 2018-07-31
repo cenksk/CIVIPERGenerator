@@ -60,7 +60,9 @@ let interfaceRouter = """
 import Foundation
 import UIKit
 
-protocol \(prefix)RouterInterface:class {}
+protocol \(prefix)RouterInterface: class {
+
+}
 
 class \(prefix)Router: NSObject {
 
@@ -79,7 +81,9 @@ class \(prefix)Router: NSObject {
     }
 }
 
-extension \(prefix)Router: \(prefix)RouterInterface {}
+extension \(prefix)Router: \(prefix)RouterInterface {
+
+}
 
 
 """
@@ -89,11 +93,13 @@ let interfacePresenter = """
 
 import Foundation
 
-protocol \(prefix)PresenterInterface:class {}
+protocol \(prefix)PresenterInterface: class {
+
+}
 
 class \(prefix)Presenter {
 
-    weak var view: \(prefix)ViewControllerInterface?
+    unowned var view: \(prefix)ViewControllerInterface
     let router: \(prefix)RouterInterface?
     let interactor: \(prefix)InteractorInterface?
 
@@ -104,7 +110,9 @@ class \(prefix)Presenter {
     }
 }
 
-extension \(prefix)Presenter: \(prefix)PresenterInterface {}
+extension \(prefix)Presenter: \(prefix)PresenterInterface {
+
+}
 
 """
 
@@ -113,15 +121,17 @@ let interfaceViewController = """
 
 import UIKit
 
-protocol \(prefix)ViewControllerInterface:class {}
-
-class \(prefix)ViewController: UIViewController {
-
-    var presenter: \(prefix)PresenterInterface?
+protocol \(prefix)ViewControllerInterface: class {
 
 }
 
-extension \(prefix)ViewController: \(prefix)ViewControllerInterface {}
+class \(prefix)ViewController: UIViewController {
+    var presenter: \(prefix)PresenterInterface?
+}
+
+extension \(prefix)ViewController: \(prefix)ViewControllerInterface {
+
+}
 
 """
 
@@ -130,12 +140,17 @@ let interfaceInteractor = """
 
 import Foundation
 
-protocol \(prefix)InteractorInterface:class {}
+protocol \(prefix)InteractorInterface: class {
 
-class \(prefix)Interactor:NSObject, \(prefix)InteractorInterface {
+}
+
+class \(prefix)Interactor {
     weak var presenter: \(prefix)PresenterInterface?
 }
 
+extension \(prefix)Interactor: \(prefix)InteractorInterface {
+
+}
 
 """
 
